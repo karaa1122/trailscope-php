@@ -1,0 +1,7 @@
+# Keep development files out of Composer dist archives.
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/phpstan.neon.dist export-ignore
+/pint.json export-ignore
+/scripts export-ignore
+/bench export-ignore
