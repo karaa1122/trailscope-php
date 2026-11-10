@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 # Static checks for the PHP SDK, in Docker (no local PHP needed):
-#   php -l on the lowest (8.2) and newest (8.5) supported PHP, Pint, PHPStan.
+#   php -l on the lowest (8.1) and newest (8.5) supported PHP, Pint, PHPStan.
 # Usage: sdks/php/scripts/check.sh [--fix]   (--fix lets Pint rewrite files)
 set -eu
 
-PHP_MIN_IMAGE=php:8.2.35-cli-alpine
+PHP_MIN_IMAGE=php:8.1.34-cli-alpine
 PHP_IMAGE=php:8.5.12-cli-alpine
 COMPOSER_IMAGE=composer:2.11.1
 

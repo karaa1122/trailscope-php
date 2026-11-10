@@ -5,7 +5,7 @@ parameters:
         - config
         - bench
     phpVersion:
-        min: 80200
+        min: 80100
         max: 80599
     tmpDir: .phpstan-cache
     treatPhpDocTypesAsCertain: false

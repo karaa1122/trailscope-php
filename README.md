@@ -1,6 +1,6 @@
 # trailscope/trailscope
 
-The [Trailscope](https://github.com/karaa1122/trailscope) SDK for PHP 8.2+ and Laravel 12 and 13: logs every request with its route, timing, user, journey keys and (on errors) bodies and stack, plus queue jobs and log lines, without making your users wait. The core has no dependencies; the Laravel integration is auto-discovered.
+The [Trailscope](https://github.com/karaa1122/trailscope) SDK for PHP 8.1+ and Laravel 10 to 13: logs every request with its route, timing, user, journey keys and (on errors) bodies and stack, plus queue jobs and log lines, without making your users wait. The core has no dependencies; the Laravel integration is auto-discovered.
 
 ```bash
 composer require trailscope/trailscope

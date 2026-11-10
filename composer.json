@@ -11,7 +11,7 @@
         "source": "https://github.com/karaa1122/trailscope/tree/main/sdks/php"
     },
     "require": {
-        "php": "^8.2",
+        "php": "^8.1",
         "ext-json": "*"
     },
     "require-dev": {
@@ -23,11 +23,11 @@
     "suggest": {
         "ext-curl": "Sends batches with curl and keeps the connection open in long-running processes (falls back to PHP streams)",
         "ext-zlib": "Compresses batches with gzip",
-        "laravel/framework": "Laravel 12 or 13: middleware, exception capture, queue jobs, log channel and Octane support",
+        "laravel/framework": "Laravel 10 to 13: middleware, exception capture, queue jobs, log channel and Octane support",
         "monolog/monolog": "Monolog 3: sends log records as Trailscope log events"
     },
     "conflict": {
-        "laravel/framework": "<12.0",
+        "laravel/framework": "<10.0",
         "monolog/monolog": "<3.0"
     },
     "autoload": {

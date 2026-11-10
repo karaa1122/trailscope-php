@@ -72,8 +72,9 @@ final class TrailscopeServiceProvider extends ServiceProvider
             $this->publishes([__DIR__.'/../../config/trailscope.php' => $this->app->configPath('trailscope.php')], 'trailscope-config');
         }
         try {
+            // Laravel 10's container doesn't declare what make() returns.
             $client = $this->app->make(Client::class);
-            if (! $client->enabled) {
+            if (! $client instanceof Client || ! $client->enabled) {
                 return;
             }
             $config = $this->app->make('config');
@@ -137,7 +138,7 @@ final class TrailscopeServiceProvider extends ServiceProvider
     private function registerMiddleware(): void
     {
         $kernel = $this->app->make(HttpKernel::class);
-        if (method_exists($kernel, 'prependMiddleware')) {
+        if (is_object($kernel) && method_exists($kernel, 'prependMiddleware')) {
             $kernel->prependMiddleware(TrailscopeMiddleware::class);
         }
     }
