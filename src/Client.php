@@ -30,7 +30,7 @@ use WeakMap;
  */
 final class Client
 {
-    public const VERSION = '0.1.0';
+    public const VERSION = '0.3.0';
 
     public const DEFAULT_IGNORE_ROUTES = ['/health', '/healthz', '/ready', '/readyz', '/livez'];
 
