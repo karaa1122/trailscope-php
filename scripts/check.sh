@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Static checks for the PHP SDK, in Docker (no local PHP needed):
-#   php -l on the lowest (8.1) and newest (8.5) supported PHP, Pint, PHPStan.
+#   php -l on the lowest (8.1) and newest (8.5) supported PHP, Pint, PHPStan, PHPUnit.
 # Usage: sdks/php/scripts/check.sh [--fix]   (--fix lets Pint rewrite files)
 set -eu
 
@@ -17,7 +17,7 @@ fi
 
 for image in "$PHP_MIN_IMAGE" "$PHP_IMAGE"; do
   echo "php -l ($image)"
-  $RUN "$image" sh -c "find src config bench -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null"
+  $RUN "$image" sh -c "find src config bench tests -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null"
 done
 
 if [ "${1:-}" = "--fix" ]; then
@@ -26,3 +26,4 @@ else
   $RUN "$PHP_IMAGE" vendor/bin/pint --test
 fi
 $RUN "$PHP_IMAGE" php -d memory_limit=1G vendor/bin/phpstan analyse --no-progress
+$RUN "$PHP_IMAGE" vendor/bin/phpunit

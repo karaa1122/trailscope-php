@@ -496,10 +496,11 @@ final class Client
             if (BodyCapture::shouldCapture($this->captureBodies, $status, $duration, $this->slowMs)) {
                 $limit = $this->maxBodyBytes;
                 $rq = BodyCapture::serialize(HttpExchange::body($ex->reqBody), $reqHeaders['content-type'] ?? null, $limit);
-                $encoding = strtolower(trim($resHeaders['content-encoding'] ?? ''));
-                $rs = $encoding !== '' && $encoding !== 'identity'
-                    ? null
-                    : BodyCapture::serialize(HttpExchange::body($ex->resBody), $resHeaders['content-type'] ?? null, $limit);
+                $rs = BodyCapture::serialize(
+                    BodyCapture::decode(HttpExchange::body($ex->resBody), $resHeaders['content-encoding'] ?? null, $limit),
+                    $resHeaders['content-type'] ?? null,
+                    $limit,
+                );
                 $item['reqBody'] = $rq[0] ?? null;
                 $item['resBody'] = $rs[0] ?? null;
                 if (($rq[1] ?? false) || ($rs[1] ?? false)) {

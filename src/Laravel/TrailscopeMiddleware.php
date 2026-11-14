@@ -190,6 +190,11 @@ final class TrailscopeMiddleware
         if (! is_string($content) || $content === '') {
             return null;
         }
+        // A compressed body stays whole: its first `$limit + 1` bytes could
+        // decode to less than that, and decoding stops at the limit anyway.
+        if ($response->headers->has('Content-Encoding')) {
+            return $content;
+        }
 
         return substr($content, 0, $limit + 1);
     }

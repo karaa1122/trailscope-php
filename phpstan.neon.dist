@@ -4,6 +4,7 @@ parameters:
         - src
         - config
         - bench
+        - tests
     phpVersion:
         min: 80100
         max: 80599

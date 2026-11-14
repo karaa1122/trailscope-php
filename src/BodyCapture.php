@@ -23,6 +23,13 @@ final class BodyCapture
         'application/pdf', 'application/zip', 'application/gzip', 'application/x-protobuf', 'application/grpc',
     ];
 
+    /**
+     * Compressed bodies are inflated this many bytes at a time, so a small
+     * but highly compressed body (deflate reaches about 1000:1) can't expand
+     * far past the limit before decoding stops.
+     */
+    private const INFLATE_CHUNK_BYTES = 1024;
+
     /** Whether a body with this content type should never be captured. */
     public static function isBinaryContentType(?string $contentType): bool
     {
@@ -47,6 +54,51 @@ final class BodyCapture
             self::ALWAYS => true,
             default => $status >= 400 || $durationMs >= $slowMs,
         };
+    }
+
+    /**
+     * Undoes a response's `Content-Encoding` so its body can be captured.
+     * Without an encoding (or with `identity`) the body is returned as it is.
+     * A `gzip` or `deflate` body is decoded until more than `$limit` bytes
+     * are out, so `truncate()` still sees whether it was cut. Returns null
+     * when the body can't be read: another encoding (`br`, `zstd`, several
+     * encodings), a value that isn't a string, corrupt data, or no ext-zlib.
+     */
+    public static function decode(mixed $body, ?string $encoding, int $limit): mixed
+    {
+        $encoding = strtolower(trim($encoding ?? ''));
+        if ($encoding === '' || $encoding === 'identity') {
+            return $body;
+        }
+        if (! is_string($body) || $body === '' || ! function_exists('inflate_init')) {
+            return null;
+        }
+        $mode = match ($encoding) {
+            'gzip', 'x-gzip' => ZLIB_ENCODING_GZIP,
+            'deflate' => ZLIB_ENCODING_DEFLATE,
+            default => null,
+        };
+        if ($mode === null) {
+            return null;
+        }
+        $inflate = @inflate_init($mode);
+        if ($inflate === false) {
+            return null;
+        }
+        $out = '';
+        $length = strlen($body);
+        for ($offset = 0; $offset < $length && strlen($out) <= $limit; $offset += self::INFLATE_CHUNK_BYTES) {
+            $chunk = @inflate_add($inflate, substr($body, $offset, self::INFLATE_CHUNK_BYTES), ZLIB_SYNC_FLUSH);
+            if ($chunk === false) {
+                return null;
+            }
+            $out .= $chunk;
+            if (inflate_get_status($inflate) === ZLIB_STREAM_END) {
+                break;
+            }
+        }
+
+        return $out === '' ? null : substr($out, 0, $limit + 1);
     }
 
     /**

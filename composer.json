@@ -18,11 +18,12 @@
         "laravel/framework": "^12.0 || ^13.0",
         "laravel/pint": "1.32.1",
         "monolog/monolog": "^3.12",
-        "phpstan/phpstan": "2.3.5"
+        "phpstan/phpstan": "2.3.5",
+        "phpunit/phpunit": "^10.5 || ^11.5 || ^12.5 || ^13.4"
     },
     "suggest": {
         "ext-curl": "Sends batches with curl and keeps the connection open in long-running processes (falls back to PHP streams)",
-        "ext-zlib": "Compresses batches with gzip",
+        "ext-zlib": "Compresses batches with gzip, and decodes gzip and deflate responses so their bodies can be captured",
         "laravel/framework": "Laravel 10 to 13: middleware, exception capture, queue jobs, log channel and Octane support",
         "monolog/monolog": "Monolog 3: sends log records as Trailscope log events"
     },
@@ -35,6 +36,11 @@
             "Trailscope\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Trailscope\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
@@ -43,14 +49,16 @@
         }
     },
     "scripts": {
-        "syntax": "find src config bench -name '*.php' -print0 | xargs -0 -n1 php -l",
+        "syntax": "find src config bench tests -name '*.php' -print0 | xargs -0 -n1 php -l",
         "lint": "pint --test",
         "format": "pint",
         "analyse": "phpstan analyse --no-progress --memory-limit=1G",
+        "test": "phpunit",
         "check": [
             "@syntax",
             "@lint",
-            "@analyse"
+            "@analyse",
+            "@test"
         ]
     },
     "config": {
